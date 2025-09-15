@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📱 موقع تحميل التطبيقات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1f1f1f;
+      color: #fff;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+    }
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid #333;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    nav button:hover {
+      background: #333;
+    }
+    #adminBtn {
+      display: none; /* مخفي في البداية */
+    }
+    .container { padding: 15px; }
+    .app {
+      background: #1e1e1e;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hidden { display: none; }
+    input, button {
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      font-family: 'Tajawal', sans-serif;
+    }
+    input { width: 90%; }
+    #adminForm, #loginBox {
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .btn-download {
+      background: #3a3a3a;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+      padding: 6px 10px;
+    }
+    .btn-download:hover { background: #555; }
+    .btn-delete {
+      background: #b30000;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 6px;
+      padding: 6px 10px;
+    }
+    .btn-delete:hover { background: #ff1a1a; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📱 موقع تحميل التطبيقات</h1>
+  </header>
+
+  <nav>
+    <button onclick="showSection('user')">👤 المستخدم</button>
+    <button id="adminBtn" onclick="showLogin()">⚙️ الأدمن</button>
+  </nav>
+
+  <div class="container">
+    <!-- واجهة المستخدم -->
+    <div id="userSection">
+      <h2>⬇️ التطبيقات المتاحة للتحميل</h2>
+      <div id="appsList"></div>
+    </div>
+
+    <!-- تسجيل دخول الأدمن -->
+    <div id="loginSection" class="hidden">
+      <div id="loginBox">
+        <h3>🔒 تسجيل دخول الأدمن</h3>
+        <input type="password" id="adminPass" placeholder="أدخل كلمة السر"><br>
+        <button onclick="checkLogin()">تسجيل الدخول</button>
+      </div>
+    </div>
+
+    <!-- واجهة الأدمن -->
+    <div id="adminSection" class="hidden">
+      <h2>➕ إضافة تطبيق جديد</h2>
+      <form id="adminForm">
+        <input type="text" id="appName" placeholder="اسم التطبيق" required><br>
+        <input type="text" id="appLink" placeholder="رابط التحميل" required><br>
+        <button type="submit">إضافة</button>
+      </form>
+      <h2>📋 إدارة التطبيقات</h2>
+      <div id="adminAppsList"></div>
+    </div>
+  </div>
+
+  <script>
+    const adminPassword = "zoz666";
+    let apps = JSON.parse(localStorage.getItem("apps")) || [];
+
+    function saveApps() {
+      localStorage.setItem("apps", JSON.stringify(apps));
+    }
+
+    function renderApps() {
+      const userList = document.getElementById("appsList");
+      const adminList = document.getElementById("adminAppsList");
+      userList.innerHTML = "";
+      adminList.innerHTML = "";
+
+      if (apps.length === 0) {
+        userList.innerHTML = "<p>🚫 لا توجد تطبيقات مضافة بعد</p>";
+        adminList.innerHTML = "<p>🚫 لا توجد تطبيقات لإدارتها</p>";
+      }
+
+      apps.forEach((app, index) => {
+        userList.innerHTML += `
+          <div class="app">
+            <strong>${app.name}</strong>
+            <a href="${app.link}" target="_blank">
+              <button class="btn-download">⬇️ تحميل</button>
+            </a>
+          </div>
+        `;
+
+        adminList.innerHTML += `
+          <div class="app">
+            <strong>${app.name}</strong>
+            <div>
+              <a href="${app.link}" target="_blank">
+                <button class="btn-download">⬇️ تحميل</button>
+              </a>
+              <button class="btn-delete" onclick="deleteApp(${index})">🗑 حذف</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function deleteApp(index) {
+      apps.splice(index, 1);
+      saveApps();
+      renderApps();
+    }
+
+    function showSection(section) {
+      document.getElementById("userSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.add("hidden");
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById(section + "Section").classList.remove("hidden");
+    }
+
+    function showLogin() {
+      showSection("login");
+    }
+
+    function checkLogin() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass === adminPassword) {
+        showSection("admin");
+      } else {
+        alert("❌ كلمة السر غير صحيحة");
+      }
+    }
+
+    // إضافة تطبيق جديد
+    document.getElementById("adminForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("appName").value;
+      const link = document.getElementById("appLink").value;
+      apps.push({name, link});
+      saveApps();
+      renderApps();
+      this.reset();
+      alert("✅ تم إضافة التطبيق بنجاح!");
+    });
+
+    renderApps();
+
+    // 👀 سر ظهور زر الأدمن بعد 5 ضغطات
+    let clickCount = 0;
+    document.body.addEventListener("click", () => {
+      clickCount++;
+      if (clickCount === 5) {
+        document.getElementById("adminBtn").style.display = "inline-block";
+        alert("⚙️ تم تفعيل زر الأدمن!");
+        clickCount = 0; // إعادة العداد
+      }
+    });
+  </script>
+
+</body>
+</html>
