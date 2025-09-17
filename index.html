@@ -83,7 +83,7 @@
 <body>
 
   <header>
-    <h1>📱 موقع تحميل التطبيقات</h1>
+    <h1>موقع تحميل برامج الملاعين</h1>
   </header>
 
   <div class="container">
@@ -94,6 +94,10 @@
 
   <script>
     const apps = [
+      {
+        name: "⚙️ تطبيق الأدمن - MLA3EN HAKING",
+        link: "https://www.mediafire.com/file/fkkvh4wqozd7vhq/Mla3en_haking_2.2.apk/file"
+      },
       {
         name: "👤 تطبيق المستخدم - mgal number",
         link: "https://www.mediafire.com/file/k2wlte4vb1dxn4l/mgaL_number_1.0.apk/file"
@@ -111,6 +115,29 @@
       if (filtered.length === 0) {
         list.innerHTML = "<p>🚫 لا توجد تطبيقات مطابقة</p>";
         return;
+      }
+
+      filtered.forEach(app => {
+        list.innerHTML += `
+          <div class="app">
+            <strong>${app.name}</strong>
+            <a href="${app.link}" target="_blank">
+              <button class="btn-download">⬇️ تحميل</button>
+            </a>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("searchBox").addEventListener("input", function() {
+      renderApps(this.value);
+    });
+
+    renderApps();
+  </script>
+
+</body>
+</html>        return;
       }
 
       filtered.forEach(app => {
