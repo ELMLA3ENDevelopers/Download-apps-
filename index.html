@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تحميل تطبيقات الملاعين</title>
+  <title>📱 موقع تحميل التطبيقات</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -12,6 +12,7 @@
       color: #eee;
       margin: 0;
       padding: 0;
+      font-size: 12px;
     }
     header {
       background: #1f1f1f;
@@ -20,28 +21,38 @@
       text-align: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.6);
     }
-    nav {
-      background: #222;
-      display: flex;
-      justify-content: center;
-      border-bottom: 1px solid #333;
-    }
-    nav button {
-      background: none;
-      border: none;
-      color: #fff;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    nav button:hover {
-      background: #333;
-    }
-    #adminBtn {
-      display: none; /* مخفي في البداية */
-    }
     .container { padding: 15px; }
+
+    h2 {
+      font-size: 16px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      color: #ffcc00;
+    }
+
+    /* شريط البحث */
+    #searchBox {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: none;
+      outline: none;
+      font-size: 13px;
+      background: #1e1e1e;
+      color: #eee;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    #searchBox::placeholder {
+      color: #aaa;
+    }
+    #searchBox:focus {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+
+    /* التطبيقات */
     .app {
       background: #1e1e1e;
       padding: 12px;
@@ -52,65 +63,81 @@
       align-items: center;
       justify-content: space-between;
     }
-    .hidden { display: none; }
-    input, button {
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      font-family: 'Tajawal', sans-serif;
-    }
-    input { width: 90%; }
-    #adminForm, #loginBox {
-      background: #1e1e1e;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    }
     .btn-download {
       background: #3a3a3a;
       color: #fff;
       cursor: pointer;
       transition: 0.3s;
       padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
     }
     .btn-download:hover { background: #555; }
-    .btn-delete {
-      background: #b30000;
-      color: #fff;
-      cursor: pointer;
-      margin-right: 6px;
-      padding: 6px 10px;
+    strong {
+      color: #00e6e6;
+      font-size: 14px;
     }
-    .btn-delete:hover { background: #ff1a1a; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>تحميل تطبيقات الملاعين</h1>
+    <h1>موقع تحميل تطبيقات الملاعين</h1>
   </header>
 
-  <nav>
-    <button onclick="showSection('user')">user</button>
-    <button id="adminBtn" onclick="showLogin()">⚙️ الأدمن</button>
-  </nav>
-
   <div class="container">
-    <!-- واجهة المستخدم -->
-    <div id="userSection">
-      <h2>⬇️ التطبيقات المتاحة للتحميل</h2>
-      <div id="appsList"></div>
-    </div>
+    <h2>⬇️ التطبيقات المتاحة للتحميل</h2>
+    <input type="text" id="searchBox" placeholder="🔍 ابحث عن تطبيق...">
+    <div id="appsList"></div>
+  </div>
 
-    <!-- تسجيل دخول الأدمن -->
-    <div id="loginSection" class="hidden">
-      <div id="loginBox">
-        <h3>🔒 تسجيل دخول الأدمن</h3>
-        <input type="password" id="adminPass" placeholder="أدخل كلمة السر"><br>
-        <button onclick="checkLogin()">تسجيل الدخول</button>
-      </div>
+  <script>
+    const apps = [
+      {
+        name: "⚙️ تطبيق الأدمن - MLA3EN HAKING",
+        link: "https://www.mediafire.com/file/fkkvh4wqozd7vhq/Mla3en_haking_2.2.apk/file"
+      },
+      {
+        name: "👤 تطبيق المستخدم - mgal number",
+        link: "https://www.mediafire.com/file/k2wlte4vb1dxn4l/mgaL_number_1.0.apk/file"
+      }
+    ];
+
+    function renderApps(filter = "") {
+      const list = document.getElementById("appsList");
+      list.innerHTML = "";
+
+      const filtered = apps.filter(app => 
+        app.name.toLowerCase().includes(filter.toLowerCase())
+      );
+
+      if (filtered.length === 0) {
+        list.innerHTML = "<p>🚫 لا توجد تطبيقات مطابقة</p>";
+        return;
+      }
+
+      filtered.forEach(app => {
+        list.innerHTML += `
+          <div class="app">
+            <strong>${app.name}</strong>
+            <a href="${app.link}" target="_blank">
+              <button class="btn-download">⬇️ تحميل</button>
+            </a>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("searchBox").addEventListener("input", function() {
+      renderApps(this.value);
+    });
+
+    renderApps();
+  </script>
+
+</body>
+</html>      </div>
     </div>
 
     <!-- واجهة الأدمن -->
